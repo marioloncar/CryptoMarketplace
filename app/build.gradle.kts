@@ -24,13 +24,21 @@ android {
     }
 
     buildTypes {
+        debug {
+        }
+
         release {
+            buildConfigField("String", "BASE_URL", "\"https://api-pub.bitfinex.com/v2/\"")
+
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
         }
+    }
+    buildFeatures {
+        buildConfig = true
     }
     compileOptions {
         sourceCompatibility = javaVersion

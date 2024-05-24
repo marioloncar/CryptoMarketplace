@@ -11,7 +11,7 @@ import org.koin.dsl.module
 val tickersDataModule = module {
 
     single<TickersRemoteSource> { TickersRemoteSourceImpl(httpClient = get()) }
-    single<TickersRepository> { TickersRepositoryImpl(tickersRemoteSource = get()) }
+    single<TickersRepository> { TickersRepositoryImpl(tickersRemoteSource = get(), json = get()) }
 
     single { GetTickersUseCase(tickersRepository = get()) }
 }

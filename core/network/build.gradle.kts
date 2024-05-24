@@ -8,6 +8,10 @@ android {
     namespace = "com.marioloncar.core.network"
 
     compileSdk = 34
+
+    buildFeatures {
+        buildConfig = true
+    }
 }
 
 kotlin {

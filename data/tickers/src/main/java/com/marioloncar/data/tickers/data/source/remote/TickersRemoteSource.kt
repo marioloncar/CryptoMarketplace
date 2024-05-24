@@ -2,5 +2,5 @@ package com.marioloncar.data.tickers.data.source.remote
 
 interface TickersRemoteSource {
 
-    suspend fun fetchTickers(): List<String>
+    suspend fun fetchTickers(): List<List<Any>>
 }
