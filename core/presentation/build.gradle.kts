@@ -9,6 +9,10 @@ android {
     compileSdk = 34
 }
 
+kotlin {
+    jvmToolchain(JavaVersion.VERSION_17.majorVersion.toInt())
+}
+
 dependencies {
     implementation(project(":core:util"))
     implementation(project.dependencies.platform(libs.kotlinx.coroutines.bom))

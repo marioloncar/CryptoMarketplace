@@ -3,8 +3,9 @@
 package com.marioloncar.cryptomarketplace
 
 import android.app.Application
-import com.marioloncar.data.users.di.usersDataModule
-import com.marioloncar.feature.users.di.usersModule
+import com.marioloncar.core.network.networkModule
+import com.marioloncar.data.tickers.di.tickersDataModule
+import com.marioloncar.feature.market.di.marketModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
@@ -16,8 +17,9 @@ class App : Application() {
         startKoin {
             androidContext(this@App)
             modules(
-                usersDataModule,
-                usersModule,
+                networkModule,
+                tickersDataModule,
+                marketModule,
             )
         }
     }

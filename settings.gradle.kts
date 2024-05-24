@@ -27,6 +27,6 @@ include(":core:presentation")
 include(":core:util")
 include(":core:ui")
 
-include(":data:users")
+include(":data:tickers")
 
-include(":feature:users")
+include(":feature:market")

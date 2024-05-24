@@ -7,7 +7,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.marioloncar.core.ui.theme.CryptoMarketplaceTheme
-import com.marioloncar.feature.users.presentation.ui.UsersScreen
+import com.marioloncar.feature.market.presentation.ui.MarketScreen
 
 class MainActivity : ComponentActivity() {
 
@@ -16,7 +16,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             CryptoMarketplaceTheme {
-                UsersScreen()
+                MarketScreen()
             }
         }
     }

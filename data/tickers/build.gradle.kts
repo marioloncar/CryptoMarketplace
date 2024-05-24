@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.marioloncar.core.util"
+    namespace = "com.marioloncar.data.tickers"
 
     compileSdk = 34
 }
@@ -15,11 +15,15 @@ kotlin {
 }
 
 dependencies {
-    implementation(project.dependencies.platform(libs.kotlinx.coroutines.bom))
-    implementation(libs.kotlinx.coroutines.core)
-    implementation(libs.kotlinx.datetime)
+    implementation(project(":core:network"))
     implementation(libs.kotlinx.serialization.json)
     implementation(project.dependencies.platform(libs.ktor.bom))
     implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.logging)
+    implementation(libs.ktor.client.content.negotiation)
+    implementation(libs.ktor.serialization.kotlinx.json)
     implementation(libs.timber)
+    implementation(project.dependencies.platform(libs.koin.bom))
+    implementation(libs.koin.core)
+    implementation(libs.koin.android)
 }

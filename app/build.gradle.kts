@@ -52,12 +52,16 @@ android {
     }
 }
 
+kotlin {
+    jvmToolchain(JavaVersion.VERSION_17.majorVersion.toInt())
+}
+
 dependencies {
+    implementation(project(":core:network"))
     implementation(project(":core:ui"))
+    implementation(project(":feature:market"))
 
-    implementation(project(":feature:users"))
-
-    implementation(project(":data:users"))
+    implementation(project(":data:tickers"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
