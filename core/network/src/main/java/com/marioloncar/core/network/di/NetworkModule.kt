@@ -37,7 +37,6 @@ val networkModule = module {
                 contentType(ContentType.Application.Json)
             }
 
-            // TODO Add logging level per variant
             install(Logging) {
                 level = if (BuildConfig.DEBUG) LogLevel.ALL else LogLevel.INFO
                 logger = object : Logger {

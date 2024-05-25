@@ -16,6 +16,7 @@ kotlin {
 
 dependencies {
     implementation(project(":core:network"))
+    implementation(project(":core:util"))
     implementation(libs.kotlinx.serialization.json)
     implementation(project.dependencies.platform(libs.ktor.bom))
     implementation(libs.ktor.client.core)

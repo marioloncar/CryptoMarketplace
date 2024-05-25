@@ -28,8 +28,6 @@ android {
         }
 
         release {
-            buildConfigField("String", "BASE_URL", "\"https://api-pub.bitfinex.com/v2/\"")
-
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -67,6 +65,8 @@ kotlin {
 dependencies {
     implementation(project(":core:network"))
     implementation(project(":core:ui"))
+    implementation(project(":core:util"))
+
     implementation(project(":feature:market"))
 
     implementation(project(":data:tickers"))

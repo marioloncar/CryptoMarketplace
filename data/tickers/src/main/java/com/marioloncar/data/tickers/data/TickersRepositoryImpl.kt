@@ -5,22 +5,18 @@ import com.marioloncar.data.tickers.domain.TickersRepository
 import com.marioloncar.data.tickers.domain.model.Ticker
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.double
 import kotlinx.serialization.json.jsonPrimitive
 
 internal class TickersRepositoryImpl(
     private val tickersRemoteSource: TickersRemoteSource,
-    private val json: Json,
 ) : TickersRepository {
 
     override fun getTickers(): Flow<List<Ticker>> = flow {
         val tickers = tickersRemoteSource.fetchTickers()
 
-        val rawData: JsonArray = json.decodeFromString(tickers.toString())
-
-        val tickersList = rawData.map { data ->
+        val tickersList = tickers.map { data ->
             if (data is JsonArray) {
                 Ticker(
                     pair = data[0].jsonPrimitive.content,
