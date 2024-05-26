@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">CryptoMarketplace</string>
+
+    <string name="earn_yield">Earn yield</string>
 </resources>

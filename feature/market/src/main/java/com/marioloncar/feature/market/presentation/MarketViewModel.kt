@@ -3,13 +3,14 @@ package com.marioloncar.feature.market.presentation
 import com.marioloncar.core.presentation.BaseViewModel
 import com.marioloncar.data.tickers.domain.model.Ticker
 import com.marioloncar.data.tickers.domain.usecase.GetLiveTickersUseCase
-import com.marioloncar.data.tickers.domain.usecase.GetTickersUseCase
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
+import java.math.BigDecimal
+import java.math.RoundingMode
+import java.util.Locale
 
 class MarketViewModel(
     private val getLiveTickersUseCase: GetLiveTickersUseCase,
@@ -23,11 +24,31 @@ class MarketViewModel(
         initialUiState = MarketUiState.Tickers.Loading
     ) {
         getLiveTickersUseCase()
-            .map<List<Ticker>, MarketUiState.Tickers> { MarketUiState.Tickers.Content(it.map { it.pair }) }
-            .onEach { println("testis $it") }
+            .map<List<Ticker>, MarketUiState.Tickers> { tickers ->
+                MarketUiState.Tickers.Content(
+                    tickers.map { ticker ->
+                        MarketUiState.TickerData(
+                            name = ticker.pair,
+                            isEarnYield = ticker.dailyChange > 0,
+                            bid = formatPrice(ticker.bid),
+                            dailyChange = formatDailyChange(dailyChange = ticker.dailyChange)
+                        )
+                    }
+                )
+            }
             .catch {
                 emit(MarketUiState.Tickers.Error("Unknown error occurred."))
             }
+    }
+
+    // TODO Extract to mapper.
+    private fun formatDailyChange(dailyChange: Double): String {
+        return String.format(Locale.US, "%.2f%%", dailyChange * 100, Locale.US)
+    }
+
+    // TODO Extract to mapper.
+    private fun formatPrice(price: Double): String {
+        return "$${BigDecimal(price).setScale(6, RoundingMode.HALF_UP).toPlainString()}"
     }
 
     override val uiState: StateFlow<MarketUiState> =
