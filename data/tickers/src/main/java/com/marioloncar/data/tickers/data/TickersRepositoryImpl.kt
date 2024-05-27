@@ -13,8 +13,8 @@ internal class TickersRepositoryImpl(
     private val tickersRemoteSource: TickersRemoteSource,
 ) : TickersRepository {
 
-    override fun getTickers(): Flow<List<Ticker>> = flow {
-        val tickers = tickersRemoteSource.fetchTickers()
+    override fun getTickers(symbols: String?): Flow<List<Ticker>> = flow {
+        val tickers = tickersRemoteSource.fetchTickers(symbols = sanitizeSymbols(symbols))
 
         val tickersList = tickers.map { data ->
             if (data is JsonArray) {
@@ -37,5 +37,30 @@ internal class TickersRepositoryImpl(
         }
 
         emit(tickersList)
+    }
+
+    private fun sanitizeSymbols(symbols: String?): String {
+        if (symbols.isNullOrBlank()) return "ALL"
+
+        return symbols.split(SPLIT_SYMBOLS_REGEX)
+            .asSequence()
+            .map(String::trim)
+            .filter(String::isNotEmpty)
+            .joinToString(",") { symbol ->
+                val sanitizedSymbol = symbol
+                    .replace(NON_ALPHA_NUMERIC_REGEX, "")
+                    .uppercase()
+
+                if (!sanitizedSymbol.startsWith("T")) {
+                    "t$sanitizedSymbol"
+                } else {
+                    "t${sanitizedSymbol.substring(1)}"
+                }
+            }
+    }
+
+    private companion object {
+        val SPLIT_SYMBOLS_REGEX = Regex("[,\\s]+")
+        val NON_ALPHA_NUMERIC_REGEX = Regex("[^A-Za-z0-9]")
     }
 }

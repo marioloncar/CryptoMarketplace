@@ -1,6 +1,8 @@
 package com.marioloncar.core.network.di
 
 import com.marioloncar.core.network.BuildConfig
+import com.marioloncar.core.network.NetworkStatePublisher
+import com.marioloncar.core.network.NetworkStatePublisherImpl
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -18,6 +20,8 @@ import timber.log.Timber
 
 @ExperimentalSerializationApi
 val networkModule = module {
+
+    single<NetworkStatePublisher> { NetworkStatePublisherImpl() }
 
     single {
         Json {

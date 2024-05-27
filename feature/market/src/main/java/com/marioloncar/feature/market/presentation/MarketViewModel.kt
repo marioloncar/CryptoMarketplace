@@ -1,54 +1,60 @@
 package com.marioloncar.feature.market.presentation
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
+import com.marioloncar.core.network.NetworkStatePublisher
 import com.marioloncar.core.presentation.BaseViewModel
 import com.marioloncar.data.tickers.domain.model.Ticker
 import com.marioloncar.data.tickers.domain.usecase.GetLiveTickersUseCase
+import com.marioloncar.feature.market.R
+import com.marioloncar.feature.market.presentation.mapper.MarketUiStateMapper
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
-import java.math.BigDecimal
-import java.math.RoundingMode
-import java.util.Locale
 
 class MarketViewModel(
     private val getLiveTickersUseCase: GetLiveTickersUseCase,
+    private val marketUiStateMapper: MarketUiStateMapper,
+    private val networkStatePublisher: NetworkStatePublisher,
 ) : BaseViewModel<MarketUiState, MarketUiAction>() {
 
-    private val toolbarUiState = observeUiState("") {
-        flowOf("Market")
+    private companion object {
+        const val SEARCH_DEBOUNCE_MILLIS = 500L
+    }
+
+    var searchQuery by mutableStateOf("")
+        private set
+
+    private val toolbarUiState: StateFlow<Int> = observeUiState(R.string.empty) {
+        flowOf(marketUiStateMapper.toTitle())
     }
 
     private val tickersUiState: StateFlow<MarketUiState.Tickers> = observeUiState(
         initialUiState = MarketUiState.Tickers.Loading
     ) {
-        getLiveTickersUseCase()
-            .map<List<Ticker>, MarketUiState.Tickers> { tickers ->
-                MarketUiState.Tickers.Content(
-                    tickers.map { ticker ->
-                        MarketUiState.TickerData(
-                            name = ticker.pair,
-                            isEarnYield = ticker.dailyChange > 0,
-                            bid = formatPrice(ticker.bid),
-                            dailyChange = formatDailyChange(dailyChange = ticker.dailyChange)
-                        )
-                    }
-                )
+        networkStatePublisher.hasNetworkConnection()
+            .distinctUntilChanged()
+            .flatMapLatest { hasNetworkConnection ->
+                if (hasNetworkConnection) {
+                    snapshotFlow { searchQuery }
+                        .distinctUntilChanged()
+                        .debounce(SEARCH_DEBOUNCE_MILLIS)
+                        .flatMapLatest {
+                            getLiveTickersUseCase(it)
+                                .map<List<Ticker>, MarketUiState.Tickers>(marketUiStateMapper::toContent)
+                                .catch { emit(marketUiStateMapper.toError()) }
+                        }
+                } else {
+                    flowOf(marketUiStateMapper.toNetworkConnectionError())
+                }
             }
-            .catch {
-                emit(MarketUiState.Tickers.Error("Unknown error occurred."))
-            }
-    }
-
-    // TODO Extract to mapper.
-    private fun formatDailyChange(dailyChange: Double): String {
-        return String.format(Locale.US, "%.2f%%", dailyChange * 100, Locale.US)
-    }
-
-    // TODO Extract to mapper.
-    private fun formatPrice(price: Double): String {
-        return "$${BigDecimal(price).setScale(6, RoundingMode.HALF_UP).toPlainString()}"
     }
 
     override val uiState: StateFlow<MarketUiState> =
@@ -65,7 +71,6 @@ class MarketViewModel(
     }
 
     private fun handleSearchInput(searchTerm: String) {
-        // TODO Implement search.
+        searchQuery = searchTerm
     }
-
 }

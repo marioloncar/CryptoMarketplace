@@ -4,5 +4,5 @@ import kotlinx.serialization.json.JsonArray
 
 interface TickersRemoteSource {
 
-    suspend fun fetchTickers(): JsonArray
+    suspend fun fetchTickers(symbols: String = "ALL"): JsonArray
 }

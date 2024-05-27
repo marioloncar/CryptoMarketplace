@@ -8,5 +8,7 @@ class GetTickersUseCase(
     private val tickersRepository: TickersRepository,
 ) {
 
-    operator fun invoke(): Flow<List<Ticker>> = tickersRepository.getTickers()
+    operator fun invoke(symbols: String? = null): Flow<List<Ticker>> {
+        return tickersRepository.getTickers(symbols)
+    }
 }

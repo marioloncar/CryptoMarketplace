@@ -12,7 +12,7 @@ class TickersRemoteSourceImpl(
 ) : BaseApi(httpClient),
     TickersRemoteSource {
 
-    override suspend fun fetchTickers(): JsonArray = execute {
-        get("${BASE_URL}/tickers?symbols=ALL").body()
+    override suspend fun fetchTickers(symbols: String): JsonArray = execute {
+        get("${BASE_URL}/tickers?symbols=$symbols").body()
     }
 }

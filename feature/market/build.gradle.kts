@@ -9,6 +9,15 @@ android {
     namespace = "com.marioloncar.feature.market"
 
     compileSdk = 34
+
+    kotlinOptions {
+        freeCompilerArgs += setOf(
+            "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
+            "-opt-in=kotlinx.coroutines.FlowPreview",
+            "-opt-in=kotlinx.serialization.ExperimentalSerializationApi",
+            "-opt-in=androidx.compose.material3.ExperimentalMaterial3Api"
+        )
+    }
 }
 
 kotlin {
@@ -18,6 +27,7 @@ kotlin {
 dependencies {
     implementation(project(":core:ui"))
     implementation(project(":core:presentation"))
+    implementation(project(":core:network"))
     implementation(project(":data:tickers"))
     implementation(project.dependencies.platform(libs.kotlinx.coroutines.bom))
     implementation(libs.kotlinx.coroutines.core)
@@ -26,6 +36,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.ui.lifecycle)
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)

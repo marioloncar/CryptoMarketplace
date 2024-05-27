@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">CryptoMarketplace</string>
+
+    <string name="empty">""</string>
+    <string name="earn_yield">Earn yield</string>
+    <string name="placeholder_search">Search tickers…</string>
+    <string name="market">Market</string>
+    <string name="empty_list">No results</string>
+    <string name="unknown_error">Unknown error occurred.</string>
+    <string name="no_network_connection">No network connection.</string>
+</resources>

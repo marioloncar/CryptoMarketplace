@@ -5,5 +5,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface TickersRepository {
 
-    fun getTickers(): Flow<List<Ticker>>
+    fun getTickers(symbols: String? = null): Flow<List<Ticker>>
 }
