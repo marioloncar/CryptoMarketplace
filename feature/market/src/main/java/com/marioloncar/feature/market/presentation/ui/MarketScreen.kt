@@ -1,7 +1,13 @@
 package com.marioloncar.feature.market.presentation.ui
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.border
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.SizeTransform
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,11 +23,13 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material.icons.rounded.Info
+import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -33,6 +41,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLifecycleOwner
@@ -59,8 +68,9 @@ fun MarketScreen(
     )
 
     Surface(
+        color = MaterialTheme.colorScheme.surface,
         modifier = modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
+        tonalElevation = 5.dp
     ) {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
@@ -89,11 +99,8 @@ fun Toolbar(
     onQueryTextChange: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column {
-        TopAppBar(
-            title = { Text(text = title) },
-            modifier = modifier
-        )
+    Column(modifier = modifier) {
+        TopAppBar(title = { Text(text = title) })
         SearchBar(searchQuery = searchQuery, onQueryTextChange = onQueryTextChange)
     }
 }
@@ -109,29 +116,47 @@ fun SearchBar(
     TextField(
         value = searchQuery,
         onValueChange = { onQueryTextChange(it) },
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+            .clip(CircleShape)
+            .background(color = MaterialTheme.colorScheme.background),
         leadingIcon = {
             Icon(
-                imageVector = Icons.Default.Search,
-                contentDescription = null
+                imageVector = Icons.Rounded.Search,
+                contentDescription = stringResource(id = R.string.search),
+                tint = MaterialTheme.colorScheme.outline
             )
+        },
+        trailingIcon = {
+            if (searchQuery.isNotEmpty()) {
+                IconButton(onClick = { onQueryTextChange("") }) {
+                    Icon(
+                        imageVector = Icons.Rounded.Clear,
+                        contentDescription = stringResource(id = R.string.clear),
+                        tint = MaterialTheme.colorScheme.outline
+                    )
+                }
+            }
         },
         singleLine = true,
         colors = TextFieldDefaults.colors(
+            focusedTextColor = MaterialTheme.colorScheme.outline,
             disabledTextColor = Color.Transparent,
             disabledIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
-            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-            focusedContainerColor = MaterialTheme.colorScheme.surface,
+            unfocusedContainerColor = MaterialTheme.colorScheme.background,
+            focusedContainerColor = MaterialTheme.colorScheme.background,
             focusedIndicatorColor = Color.Transparent
         ),
         placeholder = {
-            Text(stringResource(R.string.placeholder_search))
+            Text(
+                text = stringResource(id = R.string.placeholder_search),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.outlineVariant
+            )
         },
-        modifier = modifier
-            .fillMaxWidth()
-            .heightIn(min = 56.dp)
-            .padding(horizontal = 12.dp)
-            .border(1.dp, Color.LightGray, CircleShape),
+        textStyle = MaterialTheme.typography.bodyMedium,
         keyboardActions = KeyboardActions {
             focusManager.clearFocus()
         }
@@ -140,7 +165,7 @@ fun SearchBar(
 
 @Composable
 fun ContentList(tickersUiState: MarketUiState.Tickers, modifier: Modifier = Modifier) {
-    Surface(modifier = modifier) {
+    Box(modifier = modifier) {
         when (tickersUiState) {
             is MarketUiState.Tickers.Content -> {
                 if (tickersUiState.tickers.isEmpty()) {
@@ -187,67 +212,98 @@ fun GenericMessage(text: String, modifier: Modifier = Modifier) {
                 contentDescription = null,
                 modifier = Modifier.size(50.dp)
             )
-            Text(text = text)
-
+            Text(text = text, color = MaterialTheme.colorScheme.error)
         }
     }
 }
 
 @Composable
 fun TickerItem(tickerData: MarketUiState.TickerData, modifier: Modifier = Modifier) {
-    Surface(
-        shape = MaterialTheme.shapes.large,
-        color = MaterialTheme.colorScheme.surface,
-        border = BorderStroke(1.dp, Color.LightGray),
-        modifier = modifier.fillMaxWidth().heightIn(min = 100.dp),
-    ) {
-        Row(
-            modifier = Modifier.padding(12.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                imageVector = Icons.Rounded.Star,
-                contentDescription = null,
-                modifier = Modifier.size(40.dp)
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .heightIn(min = 100.dp)
+            .background(
+                color = MaterialTheme.colorScheme.surfaceVariant,
+                shape = MaterialTheme.shapes.medium
             )
-            Spacer(modifier = Modifier.padding(8.dp))
-            Column {
-                Text(
-                    text = tickerData.name,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(vertical = 4.dp),
-                )
-                if (tickerData.isEarnYield) {
-                    YieldItem()
-                    Spacer(modifier = Modifier.padding(4.dp))
-                }
-            }
-
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.End
-            ) {
-                Text(
-                    text = tickerData.bid,
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = tickerData.dailyChange,
-                    style = MaterialTheme.typography.labelMedium,
-                    color = if (tickerData.isEarnYield) Color.Green else Color.Red
-                )
+            .padding(12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            imageVector = Icons.Rounded.Star,
+            contentDescription = null,
+            modifier = Modifier.size(40.dp)
+        )
+        Spacer(modifier = Modifier.padding(8.dp))
+        Column {
+            Text(
+                text = tickerData.name,
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(vertical = 4.dp),
+            )
+            if (tickerData.isEarnYield) {
+                YieldItem()
+                Spacer(modifier = Modifier.padding(4.dp))
             }
         }
+
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.End
+        ) {
+            FlippingBidContent(bid = tickerData.bid)
+            DailyChange(dailyChange = tickerData.dailyChange, isEarnYield = tickerData.isEarnYield)
+        }
     }
+}
+
+@Composable
+private fun FlippingBidContent(bid: String) {
+    AnimatedContent(
+        targetState = bid,
+        transitionSpec = {
+            if (targetState > initialState) {
+                slideInVertically { height -> height } + fadeIn() togetherWith
+                        slideOutVertically { height -> -height } + fadeOut()
+            } else {
+                slideInVertically { height -> -height } + fadeIn() togetherWith
+                        slideOutVertically { height -> height } + fadeOut()
+            }.using(
+                SizeTransform(clip = false)
+            )
+        },
+        label = "Flip bid"
+    ) { animatedBid ->
+        Text(
+            text = animatedBid,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            style = MaterialTheme.typography.bodyLarge,
+            fontWeight = FontWeight.Bold
+        )
+    }
+}
+
+@Composable
+fun DailyChange(dailyChange: String, isEarnYield: Boolean) {
+    Text(
+        text = dailyChange,
+        style = MaterialTheme.typography.labelMedium,
+        color = if (isEarnYield) {
+            MaterialTheme.colorScheme.primary
+        } else {
+            MaterialTheme.colorScheme.error
+        }
+    )
 }
 
 @Composable
 fun YieldItem(modifier: Modifier = Modifier) {
     Surface(
         shape = MaterialTheme.shapes.small,
-        color = MaterialTheme.colorScheme.surfaceTint,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
         modifier = modifier
     ) {
         Text(
