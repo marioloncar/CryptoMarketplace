@@ -1,3 +1,5 @@
+@file:Suppress("UndocumentedPublicFunction")
+
 package com.marioloncar.feature.market.presentation.ui
 
 import androidx.compose.foundation.layout.Box
