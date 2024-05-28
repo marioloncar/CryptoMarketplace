@@ -4,6 +4,8 @@ import com.marioloncar.data.tickers.domain.model.Ticker
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.double
 import kotlinx.serialization.json.jsonPrimitive
+import org.json.JSONException
+import timber.log.Timber
 
 /**
  * Implementation of [TickersRepositoryMapper].
@@ -18,27 +20,35 @@ class TickersRepositoryMapperImpl : TickersRepositoryMapper {
      * @throws IllegalArgumentException if the JSON data does not match the expected format.
      */
     override fun toTickers(tickersJson: JsonArray): List<Ticker> {
-        return tickersJson.map { data ->
-            require(data is JsonArray) { "Invalid data format: Each item must be a JsonArray" }
-            require(data.size == TICKERS_DATA_ELEMENT_COUNT) {
-                "Invalid data format: Each JsonArray must contain 11 elements"
-            }
+        return tickersJson
+            .mapNotNull { data ->
+                try {
+                    require(data is JsonArray) { "Invalid data format: Each item must be a JsonArray" }
+                    require(data.size == TICKERS_DATA_ELEMENT_COUNT) {
+                        "Invalid data format: Each item should contain $TICKERS_DATA_ELEMENT_COUNT entries"
+                    }
 
-            Ticker(
-                pair = data[0].jsonPrimitive.content,
-                bid = data[1].jsonPrimitive.double,
-                bidSize = data[2].jsonPrimitive.double,
-                ask = data[3].jsonPrimitive.double,
-                askSize = data[4].jsonPrimitive.double,
-                dailyChange = data[5].jsonPrimitive.double,
-                dailyChangePerc = data[6].jsonPrimitive.double,
-                lastPrice = data[7].jsonPrimitive.double,
-                volume = data[8].jsonPrimitive.double,
-                high = data[9].jsonPrimitive.double,
-                low = data[10].jsonPrimitive.double
-            )
-        }
+                    toTicker(data)
+                } catch (exception: IllegalArgumentException) {
+                    Timber.e(exception)
+                    null
+                }
+            }
     }
+
+    private fun toTicker(data: JsonArray) = Ticker(
+        pair = data[0].jsonPrimitive.content,
+        bid = data[1].jsonPrimitive.double,
+        bidSize = data[2].jsonPrimitive.double,
+        ask = data[3].jsonPrimitive.double,
+        askSize = data[4].jsonPrimitive.double,
+        dailyChange = data[5].jsonPrimitive.double,
+        dailyChangePerc = data[6].jsonPrimitive.double,
+        lastPrice = data[7].jsonPrimitive.double,
+        volume = data[8].jsonPrimitive.double,
+        high = data[9].jsonPrimitive.double,
+        low = data[10].jsonPrimitive.double
+    )
 
     /**
      * Sanitizes ticker symbols by removing non-alphanumeric characters and ensuring they start with 't'.

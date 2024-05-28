@@ -336,6 +336,94 @@ private val cryptoImages = listOf(
 
 @Preview(showBackground = true)
 @Composable
+fun TopBarPreview() {
+    CryptoMarketplaceTheme {
+        TopBar(
+            title = "Market",
+            searchQuery = "",
+            onQueryTextChange = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun SearchBarPreview() {
+    CryptoMarketplaceTheme {
+        SearchBar(
+            searchQuery = "",
+            onQueryTextChange = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ContentListPreview() {
+    CryptoMarketplaceTheme {
+        ContentList(
+            tickersUiState = MarketUiState.Tickers.Content(tickers = emptyList())
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ProgressIndicatorPreview() {
+    CryptoMarketplaceTheme {
+        ProgressIndicator()
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun GenericMessagePreview() {
+    CryptoMarketplaceTheme {
+        GenericMessage(text = "This is a generic message")
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun TickerItemPreview() {
+    CryptoMarketplaceTheme {
+        TickerItem(
+            tickerData = MarketUiState.TickerData(
+                name = "Bitcoin",
+                bid = "$38000",
+                dailyChange = "+5%",
+                isEarnYield = true
+            )
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun YieldItemPreview() {
+    CryptoMarketplaceTheme {
+        YieldItem()
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun FlippingBidContentPreview() {
+    CryptoMarketplaceTheme {
+        FlippingBidContent(bid = "$38000")
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DailyChangePreview() {
+    CryptoMarketplaceTheme {
+        DailyChange(dailyChange = "+5%", isEarnYield = true)
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
 fun MarketScreenPreview() {
     CryptoMarketplaceTheme {
         MarketScreen()

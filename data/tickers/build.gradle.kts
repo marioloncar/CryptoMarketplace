@@ -8,6 +8,16 @@ android {
     namespace = "com.marioloncar.data.tickers"
 
     compileSdk = 34
+
+    kotlinOptions {
+        freeCompilerArgs += setOf(
+            "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
+            "-opt-in=kotlinx.coroutines.FlowPreview",
+            "-opt-in=kotlinx.serialization.ExperimentalSerializationApi",
+            "-opt-in=androidx.compose.material3.ExperimentalMaterial3Api",
+            "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"
+        )
+    }
 }
 
 kotlin {
@@ -32,5 +42,4 @@ dependencies {
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.mockito)
     androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.ui.test.junit4)
 }

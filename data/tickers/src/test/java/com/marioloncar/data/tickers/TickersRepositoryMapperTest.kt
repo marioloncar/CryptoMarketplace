@@ -51,16 +51,35 @@ class TickersRepositoryMapperTest {
         assertEquals(2900.0, ethTicker.low, 0.0)
     }
 
-    @Test(expected = IllegalArgumentException::class)
+    @Test
     fun toTickers_with_invalid_data() {
         val jsonString = """
-            [
-                ["tBTCUSD", 45000.0, 1.0, 45010.0, 1.5, 100.0, 0.0022, 45005.0, 1000.0, 46000.0]
-            ]
+        [
+            ["tBTCUSD", 45000.0, 1.0, 45010.0, 1.5, 100.0, 0.0022, 45005.0, 1000.0, 46000.0]
+        ]
+            """.trimIndent()
+        val jsonArray = Json.parseToJsonElement(jsonString).jsonArray
+
+        val tickers = mapper.toTickers(jsonArray)
+
+        // Ensure that no ticker is created from invalid data
+        assertEquals(0, tickers.size)
+    }
+
+    @Test
+    fun toTickers_with_mixed_data() {
+        val jsonString = """
+        [
+            ["tBTCUSD", 45000.0, 1.0, 45010.0, 1.5, 100.0, 0.0022, 45005.0, 1000.0, 46000.0],
+            ["tBTCUSD", 45000.0, 1.0, 45010.0, 1.5, 100.0, 0.0022, 45005.0, 1000.0, 46000.0, 44000.0],
+            ["tBTCUSD", 45000.0, 1.0, 45010.0, 1.5, 100.0, 0.0022, 45005.0, 1000.0, 46000.0, 44000.0, 1.0, 2.0, 3.0]
+        ]
         """.trimIndent()
         val jsonArray = Json.parseToJsonElement(jsonString).jsonArray
 
-        mapper.toTickers(jsonArray)
+        val tickers = mapper.toTickers(jsonArray)
+
+        assertEquals(1, tickers.size)
     }
 
     @Test
