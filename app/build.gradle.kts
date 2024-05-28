@@ -25,6 +25,7 @@ android {
 
     buildTypes {
         debug {
+            isMinifyEnabled = false
         }
 
         release {
@@ -35,9 +36,6 @@ android {
             )
         }
     }
-    buildFeatures {
-        buildConfig = true
-    }
     compileOptions {
         sourceCompatibility = javaVersion
         targetCompatibility = javaVersion
@@ -46,6 +44,7 @@ android {
         jvmTarget = javaVersion.majorVersion
     }
     buildFeatures {
+        buildConfig = true
         compose = true
     }
     composeOptions {
@@ -81,8 +80,6 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.ui.lifecycle)
 
-    implementation(libs.timber)
-
     implementation(project.dependencies.platform(libs.kotlinx.coroutines.bom))
     implementation(libs.kotlinx.coroutines.core)
 
@@ -91,11 +88,5 @@ dependencies {
     implementation(libs.koin.android)
     implementation(libs.koin.compose)
 
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
+    implementation(libs.timber)
 }

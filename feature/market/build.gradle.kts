@@ -36,7 +36,7 @@ dependencies {
     implementation(project(":data:tickers"))
     implementation(project.dependencies.platform(libs.kotlinx.coroutines.bom))
     implementation(libs.kotlinx.coroutines.core)
-    implementation(libs.timber)
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -46,10 +46,13 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+
     implementation(project.dependencies.platform(libs.koin.bom))
     implementation(libs.koin.core)
     implementation(libs.koin.android)
     implementation(libs.koin.compose)
+
+    implementation(libs.timber)
 
     debugImplementation(libs.androidx.ui.tooling)
 

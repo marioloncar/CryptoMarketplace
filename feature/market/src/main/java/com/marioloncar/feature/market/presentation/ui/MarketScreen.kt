@@ -24,28 +24,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Clear
-import androidx.compose.material.icons.rounded.Info
-import androidx.compose.material.icons.rounded.Search
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -113,64 +100,6 @@ fun TopBar(
 }
 
 @Composable
-fun SearchBar(
-    searchQuery: String,
-    onQueryTextChange: (String) -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    val focusManager = LocalFocusManager.current
-
-    TextField(
-        value = searchQuery,
-        onValueChange = { onQueryTextChange(it) },
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = dimensionResource(R.dimen.spacing_xlarge))
-            .clip(shape = CircleShape)
-            .background(color = MaterialTheme.colorScheme.background),
-        leadingIcon = {
-            Icon(
-                imageVector = Icons.Rounded.Search,
-                contentDescription = stringResource(id = R.string.search),
-                tint = MaterialTheme.colorScheme.outline
-            )
-        },
-        trailingIcon = {
-            if (searchQuery.isNotEmpty()) {
-                IconButton(onClick = { onQueryTextChange("") }) {
-                    Icon(
-                        imageVector = Icons.Rounded.Clear,
-                        contentDescription = stringResource(id = R.string.clear),
-                        tint = MaterialTheme.colorScheme.outline
-                    )
-                }
-            }
-        },
-        singleLine = true,
-        colors = TextFieldDefaults.colors(
-            focusedTextColor = MaterialTheme.colorScheme.outline,
-            disabledTextColor = Color.Transparent,
-            disabledIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent,
-            unfocusedContainerColor = MaterialTheme.colorScheme.background,
-            focusedContainerColor = MaterialTheme.colorScheme.background,
-            focusedIndicatorColor = Color.Transparent
-        ),
-        placeholder = {
-            Text(
-                text = stringResource(id = R.string.placeholder_search),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.outlineVariant
-            )
-        },
-        textStyle = MaterialTheme.typography.bodyMedium,
-        keyboardActions = KeyboardActions {
-            focusManager.clearFocus()
-        }
-    )
-}
-
-@Composable
 fun ContentList(tickersUiState: MarketUiState.Tickers, modifier: Modifier = Modifier) {
     Box(modifier = modifier) {
         when (tickersUiState) {
@@ -207,32 +136,6 @@ private fun TickerList(tickersData: List<MarketUiState.TickerData>) {
     }
 }
 
-@Composable
-fun ProgressIndicator(modifier: Modifier = Modifier) {
-    Box(
-        modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        CircularProgressIndicator()
-    }
-}
-
-@Composable
-fun GenericMessage(text: String, modifier: Modifier = Modifier) {
-    Box(
-        modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Icon(
-                imageVector = Icons.Rounded.Info,
-                contentDescription = null,
-                modifier = Modifier.size(50.dp)
-            )
-            Text(text = text, color = MaterialTheme.colorScheme.error)
-        }
-    }
-}
 
 @Composable
 fun TickerItem(tickerData: MarketUiState.TickerData, modifier: Modifier = Modifier) {
@@ -348,38 +251,11 @@ fun TopBarPreview() {
 
 @Preview(showBackground = true)
 @Composable
-fun SearchBarPreview() {
-    CryptoMarketplaceTheme {
-        SearchBar(
-            searchQuery = "",
-            onQueryTextChange = {}
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
 fun ContentListPreview() {
     CryptoMarketplaceTheme {
         ContentList(
             tickersUiState = MarketUiState.Tickers.Content(tickers = emptyList())
         )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun ProgressIndicatorPreview() {
-    CryptoMarketplaceTheme {
-        ProgressIndicator()
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GenericMessagePreview() {
-    CryptoMarketplaceTheme {
-        GenericMessage(text = "This is a generic message")
     }
 }
 

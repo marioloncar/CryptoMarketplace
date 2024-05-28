@@ -17,7 +17,9 @@ dependencies {
     implementation(project(":core:util"))
     implementation(project.dependencies.platform(libs.kotlinx.coroutines.bom))
     implementation(libs.kotlinx.coroutines.core)
+
     implementation(libs.androidx.lifecycle.viewmodel)
-    implementation(libs.timber)
     implementation(libs.androidx.core.ktx)
+
+    implementation(libs.timber)
 }
