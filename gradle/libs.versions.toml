@@ -20,6 +20,7 @@ detektVersion = "1.23.6"
 timberVersion = "5.0.1"
 jetbrainsKotlinJvm = "2.0.0"
 androidLibrary = "8.4.1"
+mockitoVersion = "5.11.0"
 
 [libraries]
 androidx-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "androidXLifecycle" }
@@ -56,6 +57,7 @@ ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp" }
 ktor-client-android = { module = "io.ktor:ktor-client-android" }
 ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json" }
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timberVersion" }
+mockito = { module = "org.mockito:mockito-core", version.ref = "mockitoVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
