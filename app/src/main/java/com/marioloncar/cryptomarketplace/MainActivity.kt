@@ -1,4 +1,4 @@
-@file:Suppress("UndocumentedPublicClass")
+@file:Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
 
 package com.marioloncar.cryptomarketplace
 

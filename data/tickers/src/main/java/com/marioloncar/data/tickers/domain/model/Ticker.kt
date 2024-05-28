@@ -1,5 +1,20 @@
 package com.marioloncar.data.tickers.domain.model
 
+/**
+ * Data class representing a ticker.
+ *
+ * @property pair The trading pair, e.g., "tBTCUSD".
+ * @property bid The current bid price.
+ * @property bidSize The size of the current bid.
+ * @property ask The current ask price.
+ * @property askSize The size of the current ask.
+ * @property dailyChange The change in price over the last day.
+ * @property dailyChangePerc The percentage change in price over the last day.
+ * @property lastPrice The last traded price.
+ * @property volume The trading volume over the last day.
+ * @property high The highest price over the last day.
+ * @property low The lowest price over the last day.
+ */
 data class Ticker(
     val pair: String,              // "tBTCUSD"
     val bid: Double,               // 67134

@@ -51,7 +51,7 @@ class TickersRepositoryMapperTest {
         assertEquals(2900.0, ethTicker.low, 0.0)
     }
 
-    @Test(expected = IndexOutOfBoundsException::class)
+    @Test(expected = IllegalArgumentException::class)
     fun toTickers_with_invalid_data() {
         val jsonString = """
             [

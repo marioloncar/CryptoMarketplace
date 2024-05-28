@@ -7,10 +7,27 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 import java.util.Locale
 
+private const val FORMAT_PRICE_SCALE = 6
+
+/**
+ * Implementation of [MarketUiStateMapper] responsible for mapping domain models to UI state models
+ * for the market screen.
+ */
 class MarketUiStateMapperImpl : MarketUiStateMapper {
 
+    /**
+     * Returns the title resource ID for the market screen.
+     *
+     * @return The resource ID of the market screen title.
+     */
     override fun toTitle(): Int = R.string.market
 
+    /**
+     * Maps a list of [Ticker] domain models to [MarketUiState.Tickers.Content] UI state model.
+     *
+     * @param tickers The list of ticker domain models.
+     * @return The [MarketUiState.Tickers.Content] UI state model representing the tickers data.
+     */
     override fun toContent(tickers: List<Ticker>): MarketUiState.Tickers.Content {
         return MarketUiState.Tickers.Content(
             tickers.map { ticker ->
@@ -29,13 +46,23 @@ class MarketUiStateMapperImpl : MarketUiStateMapper {
     }
 
     private fun formatPrice(price: Double): String {
-        return "$${BigDecimal(price).setScale(6, RoundingMode.HALF_UP).toPlainString()}"
+        return "$${BigDecimal(price).setScale(FORMAT_PRICE_SCALE, RoundingMode.HALF_UP).toPlainString()}"
     }
 
+    /**
+     * Maps an error to the [MarketUiState.Tickers.Error] UI state model.
+     *
+     * @return The [MarketUiState.Tickers.Error] UI state model representing the error.
+     */
     override fun toError(): MarketUiState.Tickers.Error {
         return MarketUiState.Tickers.Error(R.string.unknown_error)
     }
 
+    /**
+     * Maps a network connection error to the [MarketUiState.Tickers.Error] UI state model.
+     *
+     * @return The [MarketUiState.Tickers.Error] UI state model representing the network connection error.
+     */
     override fun toNetworkConnectionError(): MarketUiState.Tickers.Error {
         return MarketUiState.Tickers.Error(R.string.no_network_connection)
     }

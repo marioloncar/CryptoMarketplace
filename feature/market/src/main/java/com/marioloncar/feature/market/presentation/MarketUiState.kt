@@ -1,3 +1,5 @@
+@file:Suppress("UndocumentedPublicClass")
+
 package com.marioloncar.feature.market.presentation
 
 import androidx.annotation.StringRes
@@ -20,6 +22,14 @@ data class MarketUiState(
         data object Loading : Tickers
     }
 
+    /**
+     * Represents data for a ticker entry.
+     *
+     * @property name The name of the ticker.
+     * @property isEarnYield Indicates whether the ticker is earning yield.
+     * @property bid The bid price for the ticker.
+     * @property dailyChange The daily change in the ticker's value.
+     */
     data class TickerData(
         val name: String,
         val isEarnYield: Boolean,

@@ -1,3 +1,5 @@
+@file:Suppress("TooManyFunctions", "UndocumentedPublicFunction")
+
 package com.marioloncar.feature.market.presentation.ui
 
 import androidx.compose.animation.AnimatedContent

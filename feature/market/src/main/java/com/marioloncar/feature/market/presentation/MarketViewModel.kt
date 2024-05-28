@@ -4,7 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
-import com.marioloncar.core.network.NetworkStatePublisher
+import com.marioloncar.core.network.state.NetworkStatePublisher
 import com.marioloncar.core.presentation.BaseViewModel
 import com.marioloncar.data.tickers.domain.model.Ticker
 import com.marioloncar.data.tickers.domain.usecase.GetLiveTickersUseCase
@@ -19,6 +19,9 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 
+/**
+ * Presentation logic for Market screen.
+ */
 class MarketViewModel(
     private val getLiveTickersUseCase: GetLiveTickersUseCase,
     private val marketUiStateMapper: MarketUiStateMapper,

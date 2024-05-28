@@ -30,6 +30,7 @@ tasks.detekt {
     config.setFrom("$rootDir/staticAnalysis/detekt.yml")
     setSource("$projectDir")
     exclude(
+        "**/core/ui/**",
         "**/build.gradle.kts",
         "**/test/**",
         "**/androidTest/**"

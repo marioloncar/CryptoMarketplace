@@ -1,8 +1,8 @@
 package com.marioloncar.core.network.di
 
 import com.marioloncar.core.network.BuildConfig
-import com.marioloncar.core.network.NetworkStatePublisher
-import com.marioloncar.core.network.NetworkStatePublisherImpl
+import com.marioloncar.core.network.state.NetworkStatePublisher
+import com.marioloncar.core.network.state.NetworkStatePublisherImpl
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
