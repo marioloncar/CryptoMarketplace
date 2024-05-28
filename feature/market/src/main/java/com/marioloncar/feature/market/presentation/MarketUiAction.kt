@@ -5,5 +5,5 @@ package com.marioloncar.feature.market.presentation
  */
 sealed interface MarketUiAction {
 
-    data class OnSearchInput(val searchTerm: String) : MarketUiAction
+    data class OnSearchInput(val searchQuery: String) : MarketUiAction
 }

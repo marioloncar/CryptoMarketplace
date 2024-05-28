@@ -66,7 +66,7 @@ class MarketViewModel(
 
     override fun onActionInvoked(uiAction: MarketUiAction) {
         when (uiAction) {
-            is MarketUiAction.OnSearchInput -> handleSearchInput(uiAction.searchTerm)
+            is MarketUiAction.OnSearchInput -> handleSearchInput(uiAction.searchQuery)
         }
     }
 

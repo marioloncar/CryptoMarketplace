@@ -7,6 +7,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -26,7 +27,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.Search
-import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -45,6 +45,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -75,25 +77,28 @@ fun MarketScreen(
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             topBar = {
-                Toolbar(
+                TopBar(
                     title = stringResource(uiState.title),
                     searchQuery = marketViewModel.searchQuery,
                     onQueryTextChange = {
                         marketViewModel.onActionInvoked(
-                            MarketUiAction.OnSearchInput(it)
+                            MarketUiAction.OnSearchInput(searchQuery = it)
                         )
                     }
                 )
             },
             content = { innerPadding ->
-                ContentList(uiState.tickers, modifier = Modifier.padding(innerPadding))
+                ContentList(
+                    tickersUiState = uiState.tickers,
+                    modifier = Modifier.padding(paddingValues = innerPadding)
+                )
             }
         )
     }
 }
 
 @Composable
-fun Toolbar(
+fun TopBar(
     title: String,
     searchQuery: String,
     onQueryTextChange: (String) -> Unit,
@@ -118,8 +123,8 @@ fun SearchBar(
         onValueChange = { onQueryTextChange(it) },
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp)
-            .clip(CircleShape)
+            .padding(horizontal = dimensionResource(R.dimen.spacing_xlarge))
+            .clip(shape = CircleShape)
             .background(color = MaterialTheme.colorScheme.background),
         leadingIcon = {
             Icon(
@@ -171,16 +176,7 @@ fun ContentList(tickersUiState: MarketUiState.Tickers, modifier: Modifier = Modi
                 if (tickersUiState.tickers.isEmpty()) {
                     GenericMessage(text = stringResource(R.string.empty_list))
                 } else {
-                    LazyColumn(
-                        verticalArrangement = Arrangement.spacedBy(12.dp),
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(16.dp)
-                    ) {
-                        items(tickersUiState.tickers) {
-                            TickerItem(tickerData = it)
-                        }
-                    }
+                    TickerList(tickersData = tickersUiState.tickers)
                 }
             }
 
@@ -189,14 +185,33 @@ fun ContentList(tickersUiState: MarketUiState.Tickers, modifier: Modifier = Modi
             }
 
             MarketUiState.Tickers.Loading -> {
-                Box(
-                    modifier = modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator()
-                }
+                ProgressIndicator()
             }
         }
+    }
+}
+
+@Composable
+private fun TickerList(tickersData: List<MarketUiState.TickerData>) {
+    LazyColumn(
+        verticalArrangement = Arrangement.spacedBy(space = dimensionResource(R.dimen.spacing_large)),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(all = dimensionResource(R.dimen.spacing_xlarge))
+    ) {
+        items(tickersData) {
+            TickerItem(tickerData = it)
+        }
+    }
+}
+
+@Composable
+fun ProgressIndicator(modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator()
     }
 }
 
@@ -227,26 +242,26 @@ fun TickerItem(tickerData: MarketUiState.TickerData, modifier: Modifier = Modifi
                 color = MaterialTheme.colorScheme.surfaceVariant,
                 shape = MaterialTheme.shapes.medium
             )
-            .padding(12.dp),
+            .padding(all = dimensionResource(R.dimen.spacing_large)),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(
-            imageVector = Icons.Rounded.Star,
+        Image(
+            painter = painterResource(id = cryptoImages.random()),
             contentDescription = null,
             modifier = Modifier.size(40.dp)
         )
-        Spacer(modifier = Modifier.padding(8.dp))
+        Spacer(modifier = Modifier.padding(all = dimensionResource(R.dimen.spacing_medium)))
         Column {
             Text(
                 text = tickerData.name,
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(vertical = 4.dp),
+                modifier = Modifier.padding(vertical = dimensionResource(R.dimen.spacing_small)),
             )
             if (tickerData.isEarnYield) {
                 YieldItem()
-                Spacer(modifier = Modifier.padding(4.dp))
+                Spacer(modifier = Modifier.padding(all = dimensionResource(R.dimen.spacing_small)))
             }
         }
 
@@ -301,19 +316,21 @@ fun DailyChange(dailyChange: String, isEarnYield: Boolean) {
 
 @Composable
 fun YieldItem(modifier: Modifier = Modifier) {
-    Surface(
-        shape = MaterialTheme.shapes.small,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
+    Text(
+        text = stringResource(R.string.earn_yield),
+        style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.onPrimary,
         modifier = modifier
-    ) {
-        Text(
-            text = stringResource(R.string.earn_yield),
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.inverseOnSurface,
-            modifier = Modifier.padding(4.dp)
-        )
-    }
+            .background(color = MaterialTheme.colorScheme.primary, shape = CircleShape)
+            .padding(all = dimensionResource(R.dimen.spacing_small))
+    )
 }
+
+private val cryptoImages = listOf(
+    R.drawable.crypto_1,
+    R.drawable.crypto_2,
+    R.drawable.crypto_3
+)
 
 @Preview(showBackground = true)
 @Composable
