@@ -1,6 +1,9 @@
 # Crypto Marketplace 
 Playground project showing crypto market using latest Android technologies.
 
+## Architecture 
+**CryptoMarket** is based on the MVVM architecture and the Repository pattern, which follows the [Google's official architecture guidance](https://developer.android.com/topic/architecture).
+
 ## API 
 https://docs.bitfinex.com/reference/rest-public-tickers
 
