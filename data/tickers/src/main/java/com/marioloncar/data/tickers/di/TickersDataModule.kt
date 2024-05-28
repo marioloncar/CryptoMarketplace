@@ -8,7 +8,6 @@ import com.marioloncar.data.tickers.data.source.remote.TickersRemoteSourceImpl
 import com.marioloncar.data.tickers.domain.TickersRepository
 import com.marioloncar.data.tickers.domain.usecase.GetLiveTickersUseCase
 import com.marioloncar.data.tickers.domain.usecase.GetTickersUseCase
-import io.ktor.client.HttpClient
 import org.koin.dsl.module
 
 val tickersDataModule = module {
