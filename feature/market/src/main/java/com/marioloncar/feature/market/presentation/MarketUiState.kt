@@ -3,13 +3,11 @@
 package com.marioloncar.feature.market.presentation
 
 import androidx.annotation.StringRes
-import com.marioloncar.feature.market.R
 
 /**
  * UI state definitions for Market screen.
  */
 data class MarketUiState(
-    @StringRes val title: Int = R.string.empty,
     val tickers: Tickers = Tickers.Loading,
 ) {
 

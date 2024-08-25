@@ -16,13 +16,6 @@ private const val FORMAT_PRICE_SCALE = 6
 class MarketUiStateMapperImpl : MarketUiStateMapper {
 
     /**
-     * Returns the title resource ID for the market screen.
-     *
-     * @return The resource ID of the market screen title.
-     */
-    override fun toTitle(): Int = R.string.market
-
-    /**
      * Maps a list of [Ticker] domain models to [MarketUiState.Tickers.Content] UI state model.
      *
      * @param tickers The list of ticker domain models.

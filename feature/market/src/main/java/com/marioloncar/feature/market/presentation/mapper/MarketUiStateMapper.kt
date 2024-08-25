@@ -1,6 +1,5 @@
 package com.marioloncar.feature.market.presentation.mapper
 
-import androidx.annotation.StringRes
 import com.marioloncar.data.tickers.domain.model.Ticker
 import com.marioloncar.feature.market.presentation.MarketUiState
 
@@ -8,12 +7,6 @@ import com.marioloncar.feature.market.presentation.MarketUiState
  * Interface for mapping domain models to UI state models for the market screen.
  */
 interface MarketUiStateMapper {
-
-    /**
-     * Returns the title resource ID for the market screen.
-     */
-    @StringRes
-    fun toTitle(): Int
 
     /**
      * Maps a list of [Ticker] domain models to UI state model representing the tickers data.

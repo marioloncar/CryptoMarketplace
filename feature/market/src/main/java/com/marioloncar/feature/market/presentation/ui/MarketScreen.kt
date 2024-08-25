@@ -43,7 +43,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.marioloncar.core.ui.theme.CryptoMarketplaceTheme
 import com.marioloncar.feature.market.R
-import com.marioloncar.feature.market.presentation.MarketUiAction
 import com.marioloncar.feature.market.presentation.MarketUiState
 import com.marioloncar.feature.market.presentation.MarketViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -67,13 +66,9 @@ fun MarketScreen(
             modifier = Modifier.fillMaxSize(),
             topBar = {
                 TopBar(
-                    title = stringResource(uiState.title),
+                    title = stringResource(R.string.market),
                     searchQuery = marketViewModel.searchQuery,
-                    onQueryTextChange = {
-                        marketViewModel.onActionInvoked(
-                            MarketUiAction.OnSearchInput(searchQuery = it)
-                        )
-                    }
+                    onQueryTextChange = marketViewModel::onSearchInput
                 )
             },
             content = { innerPadding ->
