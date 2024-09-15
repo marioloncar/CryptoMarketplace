@@ -7,6 +7,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
+import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
@@ -52,6 +53,18 @@ abstract class BaseViewModel : ViewModel() {
         scope = backgroundScope,
         started = startStrategy,
         initialValue = initialValue,
+    )
+
+    protected fun <T> Flow<T>.shareInViewModel(
+        replayExpirationMillis: Long = 0,
+        startStrategy: SharingStarted = WhileSubscribed(
+            SHARE_STOP_TIMEOUT_MILLIS,
+            replayExpirationMillis
+        ),
+    ) = shareIn(
+        scope = backgroundScope,
+        started = startStrategy,
+        replay = 1,
     )
 
     companion object {
