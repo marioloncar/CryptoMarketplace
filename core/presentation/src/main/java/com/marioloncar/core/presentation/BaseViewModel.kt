@@ -2,14 +2,13 @@ package com.marioloncar.core.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.marioloncar.core.util.safeCoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import timber.log.Timber
 
@@ -21,31 +20,16 @@ abstract class BaseViewModel : ViewModel() {
 
     private val className = "${this::class.simpleName} (${this.hashCode()})"
 
-    protected val backgroundScope = viewModelScope + Dispatchers.IO
+    protected val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        Timber.e("Error executing coroutine in $className", throwable)
+    }
+
+    protected val backgroundScope = viewModelScope + Dispatchers.IO + coroutineExceptionHandler
 
     init {
         Timber.d("Init: $className")
     }
 
-    /**
-     * Executes a suspend function in the background scope.
-     * Used for one shot operations or mutating data source.
-     *
-     * @param action The suspend function to be executed.
-     */
-    protected fun launchInBackground(action: suspend () -> Unit) {
-        backgroundScope.launch(
-            safeCoroutineExceptionHandler { _, throwable ->
-                Timber.e(
-                    "Error executing: ${action::class} in $className",
-                    throwable
-                )
-            }) { action() }
-    }
-
-    /**
-     * Helper extension for [stateIn] operator.
-     */
     protected fun <T> Flow<T>.stateInViewModel(
         initialValue: T,
         startStrategy: SharingStarted = WhileSubscribed(SHARE_STOP_TIMEOUT_MILLIS),
